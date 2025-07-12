@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { setToken } from "../../utils/auth";
+import { setToken, isAuthenticated } from "../../utils/auth";
+import { useAuth } from "../../context/authContext.jsx";
 import API from "../../api";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const autoLoginData = location.state;
+  const { setAuth } = useAuth();
 
   const [email, setEmail] = useState(autoLoginData?.email || "");
   const [password, setPassword] = useState(autoLoginData?.password || "");
@@ -14,13 +16,38 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Auto login if data is provided from registration
     if (autoLoginData?.email && autoLoginData?.password) {
       handleSubmit(); // auto login
     }
   }, [autoLoginData]);
 
   const handleSubmit = async (e) => {
-    // implement your login logic here
+    if (e) e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await API.post('/auth/login', {
+        email,
+        password
+      });
+
+      const { token, user } = response.data;
+      
+      // Store token and update auth state
+      setToken(token);
+      const decoded = isAuthenticated();
+      setAuth(decoded);
+      
+      // Redirect to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error.response?.data?.error || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

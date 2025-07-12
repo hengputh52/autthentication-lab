@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated, logout } from "../utils/auth";
+import { useAuth } from "../context/authContext.jsx";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const user = token ? JSON.parse(atob(token.split(".")[1])) : null;
-
+  const { isAuthenticated, user, logout } = useAuth();
+  
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -20,7 +19,7 @@ export default function Navbar() {
         School System
       </div>
 
-      {isAuthenticated() ? (
+      {isAuthenticated ? (
         <>
           {/* Navigation links */}
           <div className="flex items-center gap-6">

@@ -12,6 +12,29 @@ import bcrypt from 'bcryptjs';
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: The user's email.
+ *           example: user@example.com
+ *     Error:
+ *       type: object
+ *       properties:
+ *         error:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     summary: Register a new user (student or teacher)
@@ -109,6 +132,48 @@ export const register = async (req, res) => {
     } catch (err) {
         await t.rollback();
         res.status(500).json({ error: err.message });
+    }
+};
+
+/**
+ * @swagger
+ * /auth/users:
+ *   get:
+ *     summary: Get all users (Protected Route)
+ *     description: Retrieve a list of all registered users. Requires valid JWT token.
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Invalid or expired token.
+ *       403:
+ *         description: Forbidden - No token provided.
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to fetch users
+ */
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await db.User.findAll({ attributes: ['id', 'email'] });
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch users' });
     }
 };
 

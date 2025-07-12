@@ -6,7 +6,6 @@ import Courses from "./pages/Courses";
 import Teachers from "./pages/Teachers";
 import Students from "./pages/Students";
 import Navbar from "./components/Navbar";
-import AuthProvider from "./components/AuthProvider";
 
 function AppRoutes() {
   return (
@@ -23,11 +22,9 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Navbar />
-        <AppRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <Navbar />
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
