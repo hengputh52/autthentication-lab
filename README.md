@@ -183,14 +183,22 @@ o	If the user is already authenticated, redirect them to /dashboard automaticall
 Reflective Questions
 
 1.	Why do we use localStorage to store the JWT token instead of saving it in a React state? What are the advantages and risks?
+    Answer: localStorage is a browser API that allows you to store data persistently in the user's browser. It's useful for storing data that needs to be available even after the user closes the browser or navigates away from the page. On the other hand, React state is stored in the component's local memory and is lost when the component is unmounted. This makes localStorage a better choice for storing authentication tokens because they need to be available across multiple pages and components in the application.
 
 2.	How does the AuthContext improve the way we manage user authentication across different pages?
+    Answer: By using a context, we can easily access the user's authentication state from any component in the application. This makes it easier to manage user authentication across different pages and components.
 
 3.	What would happen if the token in localStorage is expired or tampered with? How should our app handle such a case?
+    Answer: If the token is expired or tampered with, the user will be redirected to the login page. This ensures that only authenticated users can access the application. This helps prevent unauthorized access to the application. 
+
+
 
 4.	How does using a ProtectedRoute improve the user experience and security of the application?
+    Answer: By using a ProtectedRoute, we can ensure that only authenticated users can access certain pages. This improves the user experience by preventing unauthorized access to sensitive information. It also improves security by preventing unauthorized access to the application.
 
 5.	What are the security implications of showing different UI elements (like "Logout" or "Dashboard") based on the token state? Could this ever leak information?
+    Answer: Showing different UI elements based on the token state could potentially leak information about the user's authentication state. For example, if a user is logged in, they could see a "Logout" button, but if they are not logged in, they could see a "Login" button. This could potentially be used by an attacker to infer information about the user's authentication state. Therefore, it's important to ensure that sensitive information is not exposed based on the token state.
+
 
 
 
